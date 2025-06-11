@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stylish Budget Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-color: #f5f7fa;
+      --card-color: #ffffff;
+      --button-color: #2883a7;
+      --text-color: #000000;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      background: var(--card-color);
+      padding: 30px;
+      border-radius: 20px;
+      width: 500px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      transition: 0.5s;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .form input {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      width: 48%;
+      padding: 12px;
+      margin: 10px 1%;
+      border: none;
+      font-size: 16px;
+      border-radius: 10px;
+      background-color: var(--button-color);
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #1e7e34;
+    }
+
+    .dark-theme {
+      --bg-color: #1c1c1c;
+      --card-color: #2a2a2a;
+      --button-color: #17a2b8;
+      --text-color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💰 Budget Tracker</h1>
+    <div class="form">
+      <input id="income" type="number" placeholder="Enter Income">
+      <input id="expense" type="number" placeholder="Enter Expense">
+      <input id="category" type="text" placeholder="Category (e.g., Food)">
+      <input id="desc" type="text" placeholder="Description">
+      <button onclick="addData()">Add Entry</button>
+      <button onclick="toggleTheme()">🎨 Switch Theme</button>
+    </div>
+    <canvas id="chart" width="400" height="200"></canvas>
+  </div>
+
+  <script>
+    let chart;
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    function addData() {
+      const income = parseFloat(document.getElementById("income").value) || 0;
+      const expense = parseFloat(document.getElementById("expense").value) || 0;
+      const category = document.getElementById("category").value || "Other";
+      const desc = document.getElementById("desc").value || "No description";
+
+      totalIncome += income;
+      totalExpense += expense;
+
+      alert(`✅ Added: ${category} - ${desc}`);
+      updateChart();
+      clearFields();
+    }
+
+    function updateChart() {
+      if (chart) chart.destroy();
+
+      const ctx = document.getElementById("chart").getContext("2d");
+      chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Income', 'Expense'],
+          datasets: [{
+            data: [totalIncome, totalExpense],
+            backgroundColor: ['#28a745', '#dc3545']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+
+    function clearFields() {
+      document.getElementById("income").value = '';
+      document.getElementById("expense").value = '';
+      document.getElementById("category").value = '';
+      document.getElementById("desc").value = '';
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+    }
+  </script>
+</body>
+</html>
